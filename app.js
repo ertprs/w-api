@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 const qrcode = require('qrcode');
 const http = require('http');
 const fs = require('fs');
-const { phoneNumberFormatter } = require('./helpers/formatter');
+const { phoneNumberFormatter,phoneNumberFormatterBody } = require('./helpers/formatter');
 const fileUpload = require('express-fileupload');
 const axios = require('axios');
 
@@ -46,11 +46,29 @@ const client = new Client({
     session: sessionCfg 
 });
 
+var mysql = require('mysql');
+
+var db = mysql.createPool({
+    connectionLimit: 10,
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'whatsapp-api'
+  });
+
 client.on('message', msg => {
-    if (msg.body == '!ping') {
-        msg.reply('pong');
-    } else if (msg.body == 'good morning') {
-      msg.reply('selamat pagi');
+    if(msg.broadcast != true ){
+        if (msg.body != '') {
+            const number = phoneNumberFormatterBody(msg.from);
+            if (number != '') {
+                let sql = "INSERT INTO tabel (from_phone,message,timestamp) VALUES ?";
+                var values = [[number,msg.body,msg.timestamp]];
+                db.query(sql, [values], function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of records inserted: " + result.affectedRows);
+                });
+            }
+        }
     }
 });
 
@@ -83,6 +101,13 @@ io.on('connection', function(socket) {
                 console.error(err);
             }
         });
+    });
+
+    client.on('message', msg => {
+        if (msg.body != '') {
+            socket.emit('msglogs', msg.from +' : '+ msg.body + ' Author: '+ msg.author +' TimeStamp: '+ msg.timestamp);
+            
+        }
     });
 
     client.on('auth_failure', function(session) {

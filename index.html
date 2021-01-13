@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Whatsapp API by Ngekoding</title>
+	<title>Whatsapp API</title>
 </head>
 <body>
 
 	<div id="app">
 		<h1>Whatsapp API</h1>
-		<p>Powered by Ngekoding</p>
+		<p></p>
 		<img src="" alt="QR Code" id="qrcode">
-		<h3>Logs:</h3>
+		<h2>Logs:</h2>
 		<ul class="logs"></ul>
+		<h3>Message Log:</h3>
+		<ul class="msglogs"></ul>
+		
+
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
@@ -23,8 +27,16 @@
 				$('.logs').append($('<li>').text(msg));
 			});
 
+			socket.on('msglogs', function(msg) {
+				$('.msglogs').append($('<li>').text(msg));
+			});
+
 			socket.on('qr', function(src) {
 				$('#qrcode').attr('src', src);
+			});
+
+			socket.on('ready', function(data) {
+				$('#qrcode').hide();
 			});
 
 			socket.on('ready', function(data) {

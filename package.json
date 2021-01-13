@@ -1,7 +1,7 @@
 {
   "name": "whatsapp-api",
   "version": "1.0.0",
-  "description": "Whatsapp api by Ngekoding",
+  "description": "Whatsapp api",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -11,7 +11,7 @@
     "whatsapp-api",
     "node.js"
   ],
-  "author": "Nur Muhammad",
+  "author": "Zakario",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.20.0",
@@ -19,8 +19,10 @@
     "express-fileupload": "^1.2.0",
     "express-validator": "^6.6.1",
     "http": "0.0.1-security",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.5",
     "qrcode": "^1.4.4",
     "socket.io": "^2.3.0",
-    "whatsapp-web.js": "^1.8.2"
+    "whatsapp-web.js": "^1.11.1"
   }
 }
